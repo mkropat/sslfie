@@ -38,6 +38,11 @@ main() {
         exit
     fi
 
+    if ! has_command "$OPENSSL"; then
+        echo "Error: $OPENSSL command not found" >&2
+        exit 1
+    fi
+
     SUBJECT_ALT_NAME=$(join_commas $(map_subject "$@"))
 
     key_path=$(make_tempfile)                               &&
@@ -68,21 +73,21 @@ map_subject() {
 }
 
 generate_key() {
-    openssl genrsa "$1" 2>/dev/null
+    "$OPENSSL" genrsa "$1" 2>/dev/null
 }
 
 generate_cert() {
     local cfg
-    cfg=$(make_tempfile)                                                &&
-    printf '%s' "$config_template" >| "$cfg"                            &&
+    cfg=$(make_tempfile)                                                    &&
+    printf '%s' "$CONFIG_TEMPLATE" >| "$cfg"                                &&
 
     C="$C" CN="$CN" SUBJECT_ALT_NAME="$SUBJECT_ALT_NAME" \
-        openssl req -config "$cfg" -new -x509 -key "$KEY" -days "$DAYS" &&
+        "$OPENSSL" req -config "$cfg" -new -x509 -key "$KEY" -days "$DAYS"  &&
 
     rm -f -- "$cfg"
 }
 
-config_template="[req]
+CONFIG_TEMPLATE="[req]
 distinguished_name = req_distinguished_name
 x509_extensions = v3_req
 prompt = no
@@ -105,8 +110,14 @@ output() {
     fi
 }
 
+has_command() {
+    hash "$1" 2>/dev/null
+}
+
 make_tempfile() {
     mktemp -t sslfie.XXXXXX
 }
+
+OPENSSL=openssl
 
 main "$@"
