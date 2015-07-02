@@ -1,6 +1,6 @@
-# sslfie
+# SSLfie
 
-*Generate a self-signed x.509 certificate for use with SSL/TLS*
+*Generate self-signed x.509 certificates for use with SSL/TLS*
 
 Benefits at a glance:
 
