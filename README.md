@@ -20,6 +20,25 @@ Benefits at a glance:
       -s SIZE -- generate a key of size SIZE (default: 2048)
       -y N    -- expire cert after N years (default: 10)
 
+## Example Usage
+
+Generate a cert for *www.example.com*:
+
+    $ sslfie -c US -o example.crt -k example.key www.example.com example.com
+
+That's it.  You can use `openssl` to examine the generated certificate:
+
+    $ openssl x509 -in example.crt -noout -text | less
+
+Some key lines to look for are:
+
+    Subject: C=US, CN=www.example.com
+
+And:
+
+    X509v3 Subject Alternative Name:
+        DNS:www.example.com, DNS:example.com
+
 ## Inspiration
 
 - [Certify](https://github.com/rtts/certify) — earlier command that functions very similarly
