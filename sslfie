@@ -56,7 +56,7 @@ main() {
         generate_cert)                                      &&
 
     printf '%s\n' "$cert" | output "$cert_out"              &&
-    output "$key_out" < "$key_path"                         &&
+    (umask 077; output "$key_out" < "$key_path")            &&
 
     rm -- "$key_path"
 }
