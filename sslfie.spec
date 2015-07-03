@@ -35,5 +35,7 @@ mkdir -p %{buildroot}%{_unitdir}
 %{_mandir}/man1/*
 
 %changelog
+* Fri Jul 3 2015 Michael Kropat <mail@michael.kropat.name> - 0.2-1
+- Tweak .deb build for PPA
 * Fri Jul 3 2015 Michael Kropat <mail@michael.kropat.name> - 0.1-1
 - Initial release

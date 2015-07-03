@@ -3,7 +3,7 @@ PREFIX = /usr/local
 BIN	= $(DESTDIR)/$(PREFIX)/bin
 MAN	= $(DESTDIR)/$(PREFIX)/share/man
 
-VERSION			= 0.1
+VERSION			= 0.2
 PACKAGE_DIR		= sslfie-$(VERSION)
 PACKAGE_FILE		= sslfie_$(VERSION).tar.bz2
 PACKAGE_ORIG_FILE	= sslfie_$(VERSION).orig.tar.bz2
@@ -66,7 +66,8 @@ sslfie_$(VERSION)-1_all.deb: $(PACKAGE_FILE) debian/copyright
 	@hash dpkg-buildpackage 2>/dev/null || { \
 		echo "ERROR: can't find dpkg-buildpackage. Did you run \`sudo apt-get install debhelper devscripts\`?" >&2; exit 1; \
 	}
-	dpkg-buildpackage -b -tc -uc -us --changes-option=-u.
+	dpkg-buildpackage -b -tc -uc -us
+	mv "../$@" .
 	mv ../sslfie_$(VERSION)-1_*.changes .
 
 .PHONY: deb-src
