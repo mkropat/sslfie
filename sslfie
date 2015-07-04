@@ -15,7 +15,7 @@ Options:
 
 main() {
     local C SUBJECT_ALT_NAME
-    local cert cert_out expires_years key_out key_path key_size result
+    local cert cert_out expires_years key_out key_path key_size opts result
     C=XX
     expires_years=10
     key_size=2048
@@ -36,6 +36,12 @@ main() {
     if [ $# -eq 0 ]; then
         show_usage
         exit
+    fi
+
+    opts=$(get_options "$@")
+    if [ -n "$opts" ]; then
+        echo "Error: all options must go at the beginning: $opts" >&2
+        exit 1
     fi
 
     if ! has_command "$OPENSSL"; then
@@ -101,6 +107,15 @@ keyUsage = keyEncipherment, dataEncipherment
 extendedKeyUsage = serverAuth
 subjectAltName = \$ENV::SUBJECT_ALT_NAME
 "
+
+get_options() {
+    local arg
+    for arg in "$@"; do
+      case "$arg" in
+          -*) printf '%s ' "$arg" ;;
+      esac
+    done
+}
 
 output() {
     if [ -z "$1" ]; then
