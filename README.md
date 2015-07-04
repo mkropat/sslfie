@@ -42,11 +42,17 @@ Download the `.rpm` package from [Latest Releases](https://github.com/mkropat/ss
 
     sudo yum localinstall sslfie*.noarch.rpm
 
-### From Source
+### Standalone Script
 
-    git clone https://github.com/mkropat/sslfie.git
-    cd sslfie
-    make && sudo make install
+Installation isn't required.  The `sslfie` script is entirely self-contained,
+so you can just download it:
+
+    curl -O https://raw.githubusercontent.com/mkropat/sslfie/master/sslfie
+    chmod +x sslfie
+
+Then run it like so:
+
+    ./sslfie www.example.com example.com
 
 ## Example Usage
 
