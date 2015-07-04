@@ -6,6 +6,7 @@ Benefits at a glance:
 
 - Supports multiple domain names in one cert with the [SubjectAltName field](https://en.wikipedia.org/wiki/SubjectAltName)
 - Trivial to automate — the only required argument is a domain name
+- Easy to install `.deb` and `.rpm` packages
 
 ## Synopsis
 
@@ -70,6 +71,6 @@ And:
 
 - [Certify](https://github.com/rtts/certify) — earlier command that functions very similarly
   - (I wrote `sslfie` from scratch because I needed something that could be automated)
-- [Creating certificates with SANs using OpenSSL](http://andyarismendi.blogspot.com/2011/09/creating-certificates-with-sans-using.html) — example config file 
+- [Creating certificates with SANs using OpenSSL](http://andyarismendi.blogspot.com/2011/09/creating-certificates-with-sans-using.html) — example config file
 - [How to generate self-signed cert by jww](http://stackoverflow.com/a/21494483) — good howto post
 - [SSL howto by Tommy M. McGuire](http://www.crsr.net/Notes/SSL.html) — example of using environment variables in `openssl` config
