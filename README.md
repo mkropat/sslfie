@@ -20,6 +20,33 @@ Benefits at a glance:
       -s SIZE -- generate a key of size SIZE (default: 2048)
       -y N    -- expire cert after N years (default: 10)
 
+## Installation
+
+### Ubuntu and Linux Mint
+
+    sudo add-apt-repository ppa:mkropat/ppa
+    sudo apt-get update
+    sudo apt-get install sslfie
+
+### Debian and Friends
+
+Download the `.deb` package from [Latest Releases](https://github.com/mkropat/sslfie/releases/latest).  Then run:
+
+    sudo dpkg -i sslfie*.deb
+    sudo apt-get install -f	# if there were missing dependencies
+
+### CentOS and Friends
+
+Download the `.rpm` package from [Latest Releases](https://github.com/mkropat/sslfie/releases/latest).  Then run:
+
+    sudo yum localinstall sslfie*.noarch.rpm
+
+### From Source
+
+    git clone https://github.com/mkropat/sslfie.git
+    cd sslfie
+    make && sudo make install
+
 ## Example Usage
 
 Generate a cert for *www.example.com*:
