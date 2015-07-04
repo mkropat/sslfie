@@ -35,18 +35,16 @@ main() {
 
     if [ $# -eq 0 ]; then
         show_usage
-        exit
+        exit 1
     fi
 
     opts=$(get_options "$@")
     if [ -n "$opts" ]; then
-        echo "Error: all options must go at the beginning: $opts" >&2
-        exit 1
+        die "Error: all options must go at the beginning: $opts"
     fi
 
     if ! has_command "$OPENSSL"; then
-        echo "Error: $OPENSSL command not found" >&2
-        exit 1
+        die "Error: $OPENSSL command not found"
     fi
 
     SUBJECT_ALT_NAME=$(join_commas $(map_subject "$@"))
@@ -72,9 +70,9 @@ join_commas() {
 }
 
 map_subject() {
-    while [ $# -gt 0 ]; do
-        printf '%s\n' "DNS:$1"
-        shift
+    local arg
+    for arg; do
+        printf '%s\n' "DNS:$arg"
     done
 }
 
@@ -110,10 +108,10 @@ subjectAltName = \$ENV::SUBJECT_ALT_NAME
 
 get_options() {
     local arg
-    for arg in "$@"; do
-      case "$arg" in
-          -*) printf '%s ' "$arg" ;;
-      esac
+    for arg; do
+        case "$arg" in
+            -*) printf '%s ' "$arg" ;;
+        esac
     done
 }
 
@@ -131,6 +129,11 @@ has_command() {
 
 make_tempfile() {
     mktemp -t sslfie.XXXXXX
+}
+
+die() {
+    printf '%s\n' "$1" >&2
+    exit 1
 }
 
 OPENSSL=openssl
