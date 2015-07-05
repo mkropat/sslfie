@@ -6,6 +6,7 @@ Benefits at a glance:
 
 - Supports multiple domain names in one cert with the [SubjectAltName field](https://en.wikipedia.org/wiki/SubjectAltName)
 - Trivial to automate — the only required argument is a domain name
+- Automatically set modern options by default (`-sha256`, `-utf8`)
 - Easy to install `.deb` and `.rpm` packages
 
 ## Synopsis
