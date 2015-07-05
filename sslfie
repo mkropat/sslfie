@@ -86,7 +86,7 @@ generate_cert() {
     printf '%s' "$CONFIG_TEMPLATE" >| "$cfg"                                &&
 
     C="$C" CN="$CN" SUBJECT_ALT_NAME="$SUBJECT_ALT_NAME" \
-        "$OPENSSL" req -config "$cfg" -new -x509 -key "$KEY" -days "$DAYS"  &&
+        "$OPENSSL" req -config "$cfg" -new -x509 -sha256 -key "$KEY" -days "$DAYS"  &&
 
     rm -f -- "$cfg"
 }
