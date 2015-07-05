@@ -92,6 +92,7 @@ generate_cert() {
         -key "$KEY" \
         -new \
         -sha256 \
+        -utf8 \
         -x509                                &&
 
     rm -f -- "$cfg"
