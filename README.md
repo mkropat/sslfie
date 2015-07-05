@@ -17,6 +17,7 @@ Benefits at a glance:
     Options:
       -o PATH -- output the cert to a file at PATH
       -k PATH -- output the key to a file at PATH
+      -K PATH -- sign key at PATH (instead of generating a new one)
       -c CC   -- country code listed in the cert (default: XX)
       -s SIZE -- generate a key of size SIZE (default: 2048)
       -y N    -- expire cert after N years (default: 10)
