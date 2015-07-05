@@ -82,11 +82,17 @@ generate_key() {
 
 generate_cert() {
     local cfg
-    cfg=$(make_tempfile)                                                    &&
-    printf '%s' "$CONFIG_TEMPLATE" >| "$cfg"                                &&
+    cfg=$(make_tempfile)                     &&
+    printf '%s' "$CONFIG_TEMPLATE" >| "$cfg" &&
 
     C="$C" CN="$CN" SUBJECT_ALT_NAME="$SUBJECT_ALT_NAME" \
-        "$OPENSSL" req -config "$cfg" -new -x509 -sha256 -key "$KEY" -days "$DAYS"  &&
+        "$OPENSSL" req \
+        -config "$cfg" \
+        -days "$DAYS" \
+        -key "$KEY" \
+        -new \
+        -sha256 \
+        -x509                                &&
 
     rm -f -- "$cfg"
 }
