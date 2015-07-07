@@ -35,6 +35,11 @@ mkdir -p %{buildroot}%{_unitdir}
 %{_mandir}/man1/*
 
 %changelog
+* Fri Jul 6 2015 Michael Kropat <mail@michael.kropat.name> - 0.3-1
+- Add -K option
+- Use utf8 mode
+- Use SHA-2 for hashing
+- Check for intermixed options gotcha
 * Fri Jul 3 2015 Michael Kropat <mail@michael.kropat.name> - 0.2-1
 - Tweak .deb build for PPA
 * Fri Jul 3 2015 Michael Kropat <mail@michael.kropat.name> - 0.1-1

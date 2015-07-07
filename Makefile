@@ -3,7 +3,7 @@ PREFIX = /usr/local
 BIN	= $(DESTDIR)/$(PREFIX)/bin
 MAN	= $(DESTDIR)/$(PREFIX)/share/man
 
-VERSION			= 0.2
+VERSION			= 0.3
 PACKAGE_DIR		= sslfie-$(VERSION)
 PACKAGE_FILE		= sslfie_$(VERSION).tar.bz2
 PACKAGE_ORIG_FILE	= sslfie_$(VERSION).orig.tar.bz2
