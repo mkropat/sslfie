@@ -11,18 +11,19 @@ Options:
   -K PATH -- sign key at PATH (instead of generating a new one)
   -c CC   -- country code listed in the cert (default: XX)
   -s SIZE -- generate a key of size SIZE (default: 2048)
-  -y N    -- expire cert after N years (default: 10)"
+  -y N    -- expire cert after N years (default: 10)
+  -p      -- prompt for cert values"
 }
 
 main() {
-    local C SUBJECT_ALT_NAME
-    local cert cert_out expires_years is_temp_key key_out key_path key_size opts result
+    local C ST L O OU CN SUBJECT_ALT_NAME
+    local cert cert_out expires_years is_temp_key key_out key_path key_size opts prompt
     C=XX
     expires_years=10
     key_size=2048
 
     local OPTIND
-    while getopts ho:k:K:c:s:y: opt; do
+    while getopts ho:k:K:c:s:y:p opt; do
         case "$opt" in
             h) show_usage; exit ;;
             o) cert_out="$OPTARG" ;;
@@ -31,6 +32,7 @@ main() {
             c) C="$OPTARG" ;;
             s) key_size="$OPTARG" ;;
             y) expires_years="$OPTARG" ;;
+            p) prompt=1 ;;
         esac
     done
     shift $(( OPTIND - 1 ))
@@ -49,7 +51,31 @@ main() {
         die "Error: $OPENSSL command not found"
     fi
 
+    CN=$1
     SUBJECT_ALT_NAME=$(join_commas $(map_subject "$@"))
+
+    local form_path
+    if [ -n "$prompt" ]; then
+        if ! has_command dialog; then
+            die "Error: dialog commnd not found"
+        fi
+
+        form_path=$(make_tempfile)
+
+        C="$C" CN="$CN" SUBJECT_ALT_NAME="$SUBJECT_ALT_NAME" expires_years="$expires_years" \
+            display_form 2>"$form_path"                     &&
+        {
+            read -r CN
+            read -r SUBJECT_ALT_NAME
+            read -r expires_years
+            read -r C
+            read -r ST
+            read -r L
+            read -r O
+            read -r OU
+        } <"$form_path"                                     &&
+        rm -f -- "$form_path"
+    fi                                                      &&
 
     if [ -z "$key_path" ]; then
       is_temp_key=1
@@ -57,11 +83,15 @@ main() {
       (umask 077; generate_key "$key_size" >| "$key_path")
     fi                                                      &&
 
-    cert=$(C="$C" \
-        CN="$1" \
+    cert=$(CN="$CN" \
         SUBJECT_ALT_NAME="$SUBJECT_ALT_NAME" \
         KEY="$key_path" \
         DAYS=$(( 365 * expires_years )) \
+        C="$C" \
+        ST="$ST" \
+        L="$L" \
+        O="$O" \
+        OU="$OU" \
         generate_cert)                                      &&
 
     printf '%s\n' "$cert" | output "$cert_out"              &&
@@ -83,42 +113,85 @@ map_subject() {
     done
 }
 
+display_form() {
+    local max_length num_fields
+    max_length=255
+    num_fields=8
+    dialog \
+        --backtitle "sslfie" \
+        --title "Certificate Parameters" \
+        --form "" $(( num_fields + 6 )) 78 "$num_fields" \
+            "Common Name:"              1 1 "$CN"               1 25 "$max_length" "$max_length" \
+            "Subject Alt Name:"         2 1 "$SUBJECT_ALT_NAME" 2 25 "$max_length" "$max_length" \
+            "Expiration (in years):"    3 1 "$expires_years"    3 25 "$max_length" "$max_length" \
+            "Country:"                  4 1 "$C"                4 25 "$max_length" "$max_length" \
+            "State/Province:"           5 1 ""                  5 25 "$max_length" "$max_length" \
+            "Locality:"                 6 1 ""                  6 25 "$max_length" "$max_length" \
+            "Organization:"             7 1 ""                  7 25 "$max_length" "$max_length" \
+            "Organization Unit:"        8 1 ""                  8 25 "$max_length" "$max_length"
+}
+
 generate_key() {
     "$OPENSSL" genrsa "$1" 2>/dev/null
 }
 
 generate_cert() {
     local cfg
-    cfg=$(make_tempfile)                     &&
-    printf '%s' "$CONFIG_TEMPLATE" >| "$cfg" &&
 
-    C="$C" CN="$CN" SUBJECT_ALT_NAME="$SUBJECT_ALT_NAME" \
-        "$OPENSSL" req \
+    cfg=$(make_tempfile)            &&
+    C="$C" ST="$ST" L="$L" O="$O" OU="$OU" CN="$CN" SUBJECT_ALT_NAME="$SUBJECT_ALT_NAME" \
+        generate_config >| "$cfg"   &&
+
+    "$OPENSSL" req \
         -config "$cfg" \
         -days "$DAYS" \
         -key "$KEY" \
         -new \
         -sha256 \
         -utf8 \
-        -x509                                &&
+        -x509                       &&
 
     rm -f -- "$cfg"
 }
 
-CONFIG_TEMPLATE="[req]
+generate_config() {
+    local C_LINE ST_LINE L_LINE O_LINE OU_LINE
+
+    if [ -n "$C" ]; then
+        C_LINE="C = $C"
+    fi
+    if [ -n "$ST" ]; then
+        ST_LINE="ST = $ST"
+    fi
+    if [ -n "$L" ]; then
+        L_LINE="L = $L"
+    fi
+    if [ -n "$O" ]; then
+        O_LINE="O = $O"
+    fi
+    if [ -n "$OU" ]; then
+        OU_LINE="OU = $OU"
+    fi
+
+    echo "[req]
 distinguished_name = req_distinguished_name
 x509_extensions = v3_req
 prompt = no
 
 [req_distinguished_name]
-C = \$ENV::C
-CN = \$ENV::CN
+$C_LINE
+$ST_LINE
+$L_LINE
+$O_LINE
+$OU_LINE
+CN = $CN
 
 [v3_req]
 keyUsage = keyEncipherment, dataEncipherment
 extendedKeyUsage = serverAuth
-subjectAltName = \$ENV::SUBJECT_ALT_NAME
+subjectAltName = $SUBJECT_ALT_NAME
 "
+}
 
 get_options() {
     local arg

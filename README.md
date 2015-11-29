@@ -22,6 +22,7 @@ Benefits at a glance:
       -c CC   -- country code listed in the cert (default: XX)
       -s SIZE -- generate a key of size SIZE (default: 2048)
       -y N    -- expire cert after N years (default: 10)
+      -p      -- prompt for cert values
 
 ## Installation
 
