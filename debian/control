@@ -13,5 +13,5 @@ Vcs-Browser: https://github.com/mkropat/sslfie
 
 Package: sslfie
 Architecture: all
-Depends: openssl, ${misc:Depends}
+Depends: dialog, openssl, ${misc:Depends}
 Description: generate self-signed x.509 certificates for use with SSL/TLS

@@ -12,8 +12,8 @@ URL:            https://github.com/mkropat/sslfie
 Source0:        %{name}_%{version}.tar.bz2
 
 BuildArch:      noarch
-BuildRequires:	pandoc
-Requires:       openssl
+BuildRequires:  pandoc
+Requires:       dialog, openssl
 
 %description
 - Supports multiple domain names in one cert with the SubjectAltName field
