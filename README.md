@@ -77,6 +77,28 @@ And:
     X509v3 Subject Alternative Name:
         DNS:www.example.com, DNS:example.com
 
+## Generate a Certificate Signing Request (CSR)
+
+Did you know that the steps for creating a self-signed certificate with
+`openssl` are almost identical to the steps for creating a certificate signing
+request?  I didn't when I named it `sslfie`, go figure.
+
+If you want to get a real (that is, not self-signed) certificate, `sslfie` can
+help you with that too:
+
+    $ sslfie -r -p -o example.csr -k example.key www.example.com example.com
+
+The `-r` option causes `-o` to output a CSR instead of a cert.  Also notice
+we're using the `-p` option, which presents a text UI for inputting the [full
+distinguished
+name](https://en.wikipedia.org/wiki/Lightweight_Directory_Access_Protocol#Directory_structure),
+if you want.  Important caveat for using `-p`: you must use `-o` and `-k` to
+capture the output, because using shell redirection breaks the text UI.
+
+To examine the generated CSR:
+
+    $ openssl req -in example.crt -noout -text | less
+
 ## Inspiration
 
 - [Certify](https://github.com/rtts/certify) — earlier command that functions very similarly
