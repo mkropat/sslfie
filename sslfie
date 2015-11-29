@@ -18,7 +18,7 @@ Options:
 
 main() {
     local C ST L O OU CN SUBJECT_ALT_NAME
-    local cert cert_out expires_years generate_cmd is_temp_key key_out key_path key_size opts prompt
+    local cert cert_out expires_years generate_cmd is_temp_key key_append key_out key_path key_size opts prompt
     C=XX
     expires_years=10
     generate_cmd=generate_cert
@@ -54,6 +54,10 @@ main() {
         die "Error: $OPENSSL command not found"
     fi
 
+    if [ -n "$cert_out" ] && [ "$cert_out" = "$key_out" ]; then
+        key_append=1
+    fi
+
     CN=$1
     SUBJECT_ALT_NAME=$(join_commas $(map_subject "$@"))
 
@@ -66,7 +70,7 @@ main() {
         form_path=$(make_tempfile)
 
         C="$C" CN="$CN" SUBJECT_ALT_NAME="$SUBJECT_ALT_NAME" expires_years="$expires_years" \
-            display_form 2>"$form_path"                     &&
+            display_form 2>"$form_path"                         &&
         {
             read -r CN
             read -r SUBJECT_ALT_NAME
@@ -76,15 +80,15 @@ main() {
             read -r L
             read -r O
             read -r OU
-        } <"$form_path"                                     &&
+        } <"$form_path"                                         &&
         rm -f -- "$form_path"
-    fi                                                      &&
+    fi                                                          &&
 
     if [ -z "$key_path" ]; then
       is_temp_key=1
-      key_path=$(make_tempfile)                             &&
+      key_path=$(make_tempfile)                                 &&
       (umask 077; generate_key "$key_size" >| "$key_path")
-    fi                                                      &&
+    fi                                                          &&
 
     cert=$(CN="$CN" \
         SUBJECT_ALT_NAME="$SUBJECT_ALT_NAME" \
@@ -95,10 +99,10 @@ main() {
         L="$L" \
         O="$O" \
         OU="$OU" \
-        "$generate_cmd")                                    &&
+        "$generate_cmd")                                        &&
 
-    printf '%s\n' "$cert" | output "$cert_out"              &&
-    (umask 077; output "$key_out" < "$key_path")            &&
+    printf '%s\n' "$cert" | output "$cert_out"                  &&
+    (umask 077; output "$key_out" "$key_append" < "$key_path")  &&
 
     if [ -n "$is_temp_key" ]; then
       rm -- "$key_path"
@@ -227,7 +231,11 @@ output() {
     if [ -z "$1" ]; then
         cat
     else
-        cat >| "$1"
+        if [ -z "$2" ]; then
+            cat >| "$1"
+        else
+            cat >> "$1"
+        fi
     fi
 }
 
