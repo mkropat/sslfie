@@ -23,6 +23,7 @@ Benefits at a glance:
       -s SIZE -- generate a key of size SIZE (default: 2048)
       -y N    -- expire cert after N years (default: 10)
       -p      -- prompt for cert values
+      -r      -- output csr instead of signing a cert
 
 ## Installation
 
