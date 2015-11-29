@@ -35,6 +35,10 @@ mkdir -p %{buildroot}%{_unitdir}
 %{_mandir}/man1/*
 
 %changelog
+* Sun Nov 29 2015 Michael Kropat <mail@michael.kropat.name> - 0.4-1
+- Add -p prompt option
+- Add -r generate csr option
+- Fix: support writing cert and key to same file
 * Fri Jul 6 2015 Michael Kropat <mail@michael.kropat.name> - 0.3-1
 - Add -K option
 - Use utf8 mode

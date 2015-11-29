@@ -3,13 +3,13 @@ PREFIX = /usr/local
 BIN	= $(DESTDIR)/$(PREFIX)/bin
 MAN	= $(DESTDIR)/$(PREFIX)/share/man
 
-VERSION			= 0.3
+VERSION			= 0.4
 PACKAGE_DIR		= sslfie-$(VERSION)
 PACKAGE_FILE		= sslfie_$(VERSION).tar.bz2
 PACKAGE_ORIG_FILE	= sslfie_$(VERSION).orig.tar.bz2
 
 AUTHOR	= Michael Kropat <mail@michael.kropat.name>
-DATE	= Jul 3, 2015
+DATE	= Nov 15, 2015
 FILES	= README.md LICENSE.txt Makefile sslfie
 
 .PHONY: all
