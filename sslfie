@@ -212,7 +212,7 @@ $OU_LINE
 CN = $CN
 
 [v3_req]
-keyUsage = keyEncipherment, dataEncipherment
+keyUsage = nonRepudiation, digitalSignature, keyEncipherment
 extendedKeyUsage = serverAuth
 subjectAltName = $SUBJECT_ALT_NAME
 "
