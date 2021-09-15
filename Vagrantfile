@@ -9,9 +9,8 @@ cd /vagrant
 mk-build-deps --install --tool='apt-get --no-install-recommends -y'
 EOF
 
-provision_chef = <<EOF
-curl -O https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-sudo yum install -y epel-release-latest-7.noarch.rpm
+provision_centos = <<EOF
+sudo yum install -y epel-release
 sudo yum install -y rpmdevtools yum-utils
 rpmdev-setuptree
 
@@ -26,7 +25,7 @@ Vagrant.configure(2) do |config|
   end
 
   config.vm.define 'centos' do |centos|
-    centos.vm.box = 'chef/centos-7.0'
-    centos.vm.provision 'shell', privileged: false, inline: provision_chef
+    centos.vm.box = 'centos/7'
+    centos.vm.provision 'shell', privileged: false, inline: provision_centos
   end
 end
